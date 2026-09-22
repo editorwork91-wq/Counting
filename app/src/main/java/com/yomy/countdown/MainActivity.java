@@ -34,10 +34,16 @@ public class MainActivity extends Activity {
         private final RectF rect = new RectF();
         private final Handler handler = new Handler(Looper.getMainLooper());
         private final TimeZone cairo = TimeZone.getTimeZone("Africa/Cairo");
+
+        // Change these four values to move the countdown window.
         private final long startMillis = dateMillis(2026, 9, 17, 0, 0);
         private final long targetMillis = dateMillis(2026, 9, 24, 0, 0);
+
         private final Runnable ticker = new Runnable() {
-            @Override public void run() { invalidate(); handler.postDelayed(this, 250); }
+            @Override public void run() {
+                invalidate();
+                handler.postDelayed(this, 250);
+            }
         };
 
         CountdownView() {
@@ -59,10 +65,12 @@ public class MainActivity extends Activity {
 
         @Override protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
+
             final float w = getWidth();
             final float h = getHeight() - getPaddingTop() - getPaddingBottom();
             final float top = getPaddingTop();
             final long now = System.currentTimeMillis();
+
             final long remaining = Math.max(0L, targetMillis - now);
             long totalSeconds = remaining / 1000L;
             final long days = totalSeconds / 86400L;
@@ -74,13 +82,16 @@ public class MainActivity extends Activity {
 
             drawBackdrop(canvas, w, h, top);
             drawHeader(canvas, w, top);
-            drawEventCard(canvas, w, h, top, now);
+            drawEventCard(canvas, w, top, now);
 
-            final float gridTop = top + h * 0.43f;
-            final float gap = dp(10);
             final float side = dp(22);
+            final float gap = dp(10);
+            final float gridTop = top + dp(198);
+            final float progressY = top + h - dp(56);
+            final float usableGrid = Math.max(dp(150), progressY - gridTop - dp(14));
+            final float cardH = Math.min(dp(118), Math.max(dp(72), (usableGrid - gap) / 2f));
             final float cardW = (w - side * 2 - gap) / 2f;
-            final float cardH = Math.min(dp(118), h * 0.16f);
+
             drawUnit(canvas, side, gridTop, cardW, cardH, days, "DAYS");
             drawUnit(canvas, side + cardW + gap, gridTop, cardW, cardH, hours, "HOURS");
             drawUnit(canvas, side, gridTop + cardH + gap, cardW, cardH, minutes, "MINUTES");
@@ -104,45 +115,58 @@ public class MainActivity extends Activity {
             text(c, "THE COUNTDOWN", w / 2f, top + dp(82), sp(11), true, Color.rgb(154, 163, 185));
         }
 
-        private void drawEventCard(Canvas c, float w, float h, float top, long now) {
+        private void drawEventCard(Canvas c, float w, float top, long now) {
             float l = dp(22), r = w - dp(22), t = top + dp(102), b = t + dp(82);
+
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(Color.rgb(18, 22, 34));
             rect.set(l, t, r, b);
             c.drawRoundRect(rect, dp(20), dp(20), paint);
+
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(dp(1));
             paint.setColor(Color.rgb(44, 50, 70));
             c.drawRoundRect(rect, dp(20), dp(20), paint);
+
             paint.setStyle(Paint.Style.FILL);
-            text(c, "LAUNCH DAY", l + dp(20), t + dp(31), sp(11), true, Color.rgb(129, 144, 173), Paint.Align.LEFT);
-            text(c, "24 SEPTEMBER 2026", l + dp(20), t + dp(56), sp(17), true, Color.WHITE, Paint.Align.LEFT);
-            float progress = progress(now);
-            text(c, String.format(Locale.US, "%d%%", Math.round(progress * 100f)), r - dp(20), t + dp(44), sp(13), true, Color.WHITE, Paint.Align.RIGHT);
+            text(c, "LAUNCH DAY", l + dp(20), t + dp(31), sp(11), true,
+                    Color.rgb(129, 144, 173), Paint.Align.LEFT);
+            text(c, "24 SEPTEMBER 2026", l + dp(20), t + dp(56), sp(17), true,
+                    Color.WHITE, Paint.Align.LEFT);
+            text(c, String.format(Locale.US, "%d%%", Math.round(progress(now) * 100f)),
+                    r - dp(20), t + dp(44), sp(13), true, Color.WHITE, Paint.Align.RIGHT);
         }
 
-        private void drawUnit(Canvas c, float x, float y, float cardW, float cardH, long value, String label) {
+        private void drawUnit(Canvas c, float x, float y, float cardW, float cardH,
+                              long value, String label) {
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(Color.rgb(17, 21, 32));
             rect.set(x, y, x + cardW, y + cardH);
             c.drawRoundRect(rect, dp(22), dp(22), paint);
+
             paint.setStyle(Paint.Style.STROKE);
             paint.setStrokeWidth(dp(1));
             paint.setColor(Color.rgb(39, 45, 63));
             c.drawRoundRect(rect, dp(22), dp(22), paint);
+
             paint.setStyle(Paint.Style.FILL);
-            text(c, String.format(Locale.US, "%02d", value), x + cardW / 2f, y + cardH * 0.59f, sp(40), true, Color.WHITE);
-            text(c, label, x + cardW / 2f, y + cardH - dp(18), sp(10), true, Color.rgb(124, 136, 164));
+            text(c, String.format(Locale.US, "%02d", value),
+                    x + cardW / 2f, y + cardH * 0.59f, sp(40), true, Color.WHITE);
+            text(c, label, x + cardW / 2f, y + cardH - dp(18),
+                    sp(10), true, Color.rgb(124, 136, 164));
         }
 
         private void drawProgress(Canvas c, float w, float h, float top, long now) {
             float y = top + h - dp(56);
-            text(c, "COUNTDOWN STARTED  •  17 SEPTEMBER", dp(22), y, sp(10), true, Color.rgb(117, 130, 157), Paint.Align.LEFT);
+            text(c, "COUNTDOWN STARTED  •  17 SEPTEMBER",
+                    dp(22), y, sp(10), true, Color.rgb(117, 130, 157), Paint.Align.LEFT);
+
             float x1 = dp(22), x2 = w - dp(22), barY = y + dp(17);
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(Color.rgb(35, 41, 57));
             rect.set(x1, barY, x2, barY + dp(6));
             c.drawRoundRect(rect, dp(4), dp(4), paint);
+
             paint.setColor(Color.WHITE);
             rect.right = x1 + (x2 - x1) * progress(now);
             c.drawRoundRect(rect, dp(4), dp(4), paint);
@@ -161,13 +185,21 @@ public class MainActivity extends Activity {
             return c.getTimeInMillis();
         }
 
-        private float dp(float v) { return v * getResources().getDisplayMetrics().density; }
-        private float sp(float v) { return v * getResources().getDisplayMetrics().scaledDensity; }
+        private float dp(float value) {
+            return value * getResources().getDisplayMetrics().density;
+        }
 
-        private void text(Canvas c, String value, float x, float y, float size, boolean bold, int color) {
+        private float sp(float value) {
+            return value * getResources().getDisplayMetrics().scaledDensity;
+        }
+
+        private void text(Canvas c, String value, float x, float y, float size,
+                          boolean bold, int color) {
             text(c, value, x, y, size, bold, color, Paint.Align.CENTER);
         }
-        private void text(Canvas c, String value, float x, float y, float size, boolean bold, int color, Paint.Align align) {
+
+        private void text(Canvas c, String value, float x, float y, float size,
+                          boolean bold, int color, Paint.Align align) {
             paint.setStyle(Paint.Style.FILL);
             paint.setColor(color);
             paint.setTextSize(size);
