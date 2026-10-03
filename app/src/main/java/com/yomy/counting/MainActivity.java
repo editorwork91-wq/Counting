@@ -494,7 +494,7 @@ public final class MainActivity extends Activity {
                 if (y < dp(70) && x < dp(80)) { screen="profile"; invalidate(); return; }
                 float yy=y+settingsScroll-dp(82);
                 if(yy>dp(78)&&yy<dp(132)){dark=!dark; toast(dark?"Dark glass on":"Light glass on");}
-                else if(yy>dp(142)&&yy<dp(196){sleep=!sleep; toast(sleep?"Sleep Mode 10 PM—5 AM":"Sleep Mode off");}
+                else if(yy>dp(142)&&yy<dp(196)){sleep=!sleep; toast(sleep?"Sleep Mode 10 PM—5 AM":"Sleep Mode off");}
                 else if(yy>dp(206)&&yy<dp(260)){fontScale=fontScale==1?2:fontScale==2?0:1;toast(fontScale==2?"Large text":fontScale==0?"Small text":"Default text");}
                 else if(yy>dp(270)&&yy<dp(324)){arabic=!arabic;toast(arabic?"العربية":"English");}
                 invalidate(); return;
