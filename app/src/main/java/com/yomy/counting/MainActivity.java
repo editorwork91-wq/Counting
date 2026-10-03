@@ -1,6 +1,8 @@
 package com.yomy.counting;
 
 import android.app.Activity;
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -27,7 +29,9 @@ import java.util.List;
 import java.util.Locale;
 
 public final class MainActivity extends Activity {
+    private static final int NOTIFICATION_PERMISSION_REQUEST = 7001;
     private YomyView view;
+    private NotificationCenter notifications;
 
     @Override
     protected void onCreate(Bundle state) {
@@ -37,6 +41,11 @@ public final class MainActivity extends Activity {
         w.setNavigationBarColor(Color.rgb(10, 13, 20));
         if (Build.VERSION.SDK_INT >= 23) {
             w.getDecorView().setSystemUiVisibility(0);
+        }
+        notifications = new NotificationCenter(this);
+        if (Build.VERSION.SDK_INT >= 33 &&
+                checkSelfPermission(Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_REQUEST);
         }
         view = new YomyView(this);
         setContentView(view);
