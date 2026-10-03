@@ -1,4 +1,4 @@
-name: Build YOMY APK
+name: Build YOMY Glass APK
 
 on:
   workflow_dispatch:
@@ -26,16 +26,6 @@ jobs:
           java-version: '17'
           cache: gradle
 
-      - name: Verify Android SDK
-        shell: bash
-        run: |
-          test -d "$ANDROID_HOME"
-          test -d "$ANDROID_HOME/platforms/android-35"
-          test -d "$ANDROID_HOME/build-tools/35.0.0"
-          echo "Android SDK: $ANDROID_HOME"
-          echo "Android platform 35: OK"
-          echo "Build tools 35.0.0: OK"
-
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
@@ -45,13 +35,11 @@ jobs:
         run: gradle :app:assembleDebug --no-daemon --stacktrace
 
       - name: Verify APK
-        run: |
-          test -s app/build/outputs/apk/debug/app-debug.apk
-          ls -lh app/build/outputs/apk/debug/app-debug.apk
+        run: test -s app/build/outputs/apk/debug/app-debug.apk
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
-          name: YOMY-countdown-debug
+          name: YOMY-glass-debug
           path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error

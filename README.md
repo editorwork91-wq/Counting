@@ -1,21 +1,15 @@
-# YOMY Countdown
+# YOMY Glass
 
-A standalone Android countdown app for the YOMY launch moment.
+A standalone Android UI foundation for YOMY, rebuilt from scratch in the Counting repository.
 
-## Current target
-- Countdown start: **17 September 2026, 00:00 Cairo time**
-- Launch target: **24 September 2026, 00:00 Cairo time**
-- Offline after installation
-- Live days / hours / minutes / seconds
+## Design direction
+- Premium glass surfaces with lightweight fallbacks
+- YOMY brand unit centered in the header
+- Chats, conversation, Fedo, Profile and Settings shells
+- Functional local navigation and interaction states
+- Dark mode, language toggle, font sizing and Sleep Mode controls
+- Android/Huawei-safe rendering without GMS-only UI dependencies
+- No AI-branded visual elements
 
 ## Build
-GitHub Actions automatically builds a debug APK on every push to `main` and on manual workflow dispatch.
-
-Artifact: `YOMY-countdown-debug`
-
-## Change the date
-Edit the two `dateMillis(...)` values in `app/src/main/java/com/yomy/countdown/MainActivity.java` and push to `main`.
-
-## Project
-Application ID: `com.yomy.countdown`
-Version: `1.1`
+The GitHub Actions workflow builds a debug APK with Android SDK 35 and Java 17.
