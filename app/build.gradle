@@ -1,5 +1,9 @@
 plugins { id 'com.android.application' }
 
+def cfg = { String name, String fallback = "" ->
+    return project.findProperty(name) ?: System.getenv(name) ?: fallback
+}
+
 android {
     namespace 'com.yomy.counting'
     compileSdk 35
@@ -8,8 +12,13 @@ android {
         applicationId 'com.yomy.counting'
         minSdk 23
         targetSdk 35
-        versionCode 3
-        versionName '1.0'
+        versionCode 4
+        versionName '1.1'
+        buildConfigField 'String', 'YOMY_ENVIRONMENT', '"' + cfg('YOMY_ENVIRONMENT', 'development') + '"'
+        buildConfigField 'String', 'SUPABASE_URL', '"' + cfg('SUPABASE_URL') + '"'
+        buildConfigField 'String', 'SUPABASE_PUBLISHABLE_KEY', '"' + cfg('SUPABASE_PUBLISHABLE_KEY') + '"'
+        buildConfigField 'String', 'PUSH_PROVIDER', '"' + cfg('PUSH_PROVIDER') + '"'
+        buildConfigField 'String', 'PUSH_APP_ID', '"' + cfg('PUSH_APP_ID') + '"'
     }
 
     buildFeatures { buildConfig = true }
@@ -18,4 +27,8 @@ android {
         sourceCompatibility JavaVersion.VERSION_17
         targetCompatibility JavaVersion.VERSION_17
     }
+}
+
+dependencies {
+    implementation 'androidx.core:core:1.13.1'
 }
